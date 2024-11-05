@@ -11,7 +11,9 @@ public class PlayerAgent : Agent
     private const float Tmax = 20f;
     private float lastCaptureTime;
 
-    private List<float> tensionValues;
+    private List<float> tactualValues = new List<float>();
+    private List<float> tensionValues = new List<float>();
+    private List<int> enemyCounts = new List<int>();
 
     //Player 및 AgentUI 컴포넌트 참조
     [field: SerializeField] Player player;
@@ -47,8 +49,6 @@ public class PlayerAgent : Agent
         ResetTimer();
         lastPosition = player.transform.position;
         autoMoveDirection= Vector2.zero;
-
-        tensionValues = new List<float>();
     }
 
     public void Update()
@@ -113,10 +113,13 @@ public class PlayerAgent : Agent
             float calculatedTension = CalculateTension(Tactual);
 
             // Store the calculated tension in a list
+            tactualValues.Add(Tactual);
             tensionValues.Add(calculatedTension);
+            enemyCounts.Add(updatedEnemyCount);
 
             // Save the episode number, kill time (Tactual), and tension value to the CSV file
-            CSVManager.AppendToCSV(episodeCount + "," + killTime + "," + calculatedTension + "," + enemyCount);
+            //CSVManager.AppendToCSV(episodeCount + "," + killTime + "," + calculatedTension + "," + enemyCount);
+            SaveEpisodeDataToCSV();
 
             // Now update the currentEnemyCount after calculating tension
             currentEnemyCount = updatedEnemyCount;
@@ -148,6 +151,20 @@ public class PlayerAgent : Agent
             IncrementEpisodeCount();
         }
 
+    }
+
+    private void SaveEpisodeDataToCSV()
+    {
+        string tactualStr = string.Join(", ", tactualValues);
+        string tensionStr = string.Join(", ", tensionValues);
+        string enemyCountStr = string.Join(", ", enemyCounts);
+
+        CSVManager.AppendToCSV($"{episodeCount},{tactualStr},{tensionStr},{enemyCountStr}");
+
+        // Clear lists for the next episode
+        tactualValues.Clear();
+        tensionValues.Clear();
+        enemyCounts.Clear();
     }
 
     public void OnEnemyKilled()
@@ -284,7 +301,10 @@ public class PlayerAgent : Agent
 
         lastCaptureTime = Time.time;
 
+        tactualValues.Clear();
         tensionValues.Clear();
+        enemyCounts.Clear();
+
 
         initialEnemyCount = GameManager.Instance.Spawner.enemyAmount;
         currentEnemyCount = initialEnemyCount;
