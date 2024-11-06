@@ -159,7 +159,11 @@ public class PlayerAgent : Agent
         string tensionStr = string.Join(", ", tensionValues);
         string enemyCountStr = string.Join(", ", enemyCounts);
 
-        CSVManager.AppendToCSV($"{episodeCount},{tactualStr},{tensionStr},{enemyCountStr}");
+        // Format the data as a single line in CSV: Episode, Tactual, Tension, EnemyCount
+        string content = $"{episodeCount},{tactualStr},{tensionStr},{enemyCountStr}";
+
+        // Save the formatted data to the CSV
+        CSVManager.AppendToCSV(content);
 
         // Clear lists for the next episode
         tactualValues.Clear();
