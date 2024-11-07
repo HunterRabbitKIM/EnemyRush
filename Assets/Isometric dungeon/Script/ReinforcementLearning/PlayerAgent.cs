@@ -119,7 +119,6 @@ public class PlayerAgent : Agent
 
             // Save the episode number, kill time (Tactual), and tension value to the CSV file
             //CSVManager.AppendToCSV(episodeCount + "," + killTime + "," + calculatedTension + "," + enemyCount);
-            SaveEpisodeDataToCSV();
 
             // Now update the currentEnemyCount after calculating tension
             currentEnemyCount = updatedEnemyCount;
@@ -155,9 +154,10 @@ public class PlayerAgent : Agent
 
     private void SaveEpisodeDataToCSV()
     {
-        string tactualStr = string.Join(", ", tactualValues);
-        string tensionStr = string.Join(", ", tensionValues);
-        string enemyCountStr = string.Join(", ", enemyCounts);
+        // Combine the values in each list into a single string, separated by commas and enclosed in quotes
+        string tactualStr = "\"" + string.Join(", ", tactualValues) + "\"";
+        string tensionStr = "\"" + string.Join(", ", tensionValues) + "\"";
+        string enemyCountStr = "\"" + string.Join(", ", enemyCounts) + "\"";
 
         // Format the data as a single line in CSV: Episode, Tactual, Tension, EnemyCount
         string content = $"{episodeCount},{tactualStr},{tensionStr},{enemyCountStr}";
@@ -290,6 +290,8 @@ public class PlayerAgent : Agent
     //에피소드가 시작될 때 호출되는 메서드
     public override void OnEpisodeBegin()
     {
+        SaveEpisodeDataToCSV();
+
         //게임을 일시정지하고 초기 상태로 설정
         GameManager.Instance.GameStop();
         prevScore = 0;
