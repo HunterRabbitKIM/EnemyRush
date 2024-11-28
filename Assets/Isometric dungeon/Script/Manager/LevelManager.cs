@@ -44,7 +44,7 @@ public class LevelManager : MonoBehaviour
     //레벨 생성
     public void CreateLevel()
     {
-        obstarclePercentage = 1;
+        obstarclePercentage = 0;
 
         //기존의 모든 타일을 지움
         baseTile.map.ClearAllTiles();

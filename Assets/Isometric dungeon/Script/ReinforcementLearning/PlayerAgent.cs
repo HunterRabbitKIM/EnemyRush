@@ -287,6 +287,7 @@ public class PlayerAgent : Agent
         agentUI.SetStepValue(StepCount);
     }
 
+    
     //에피소드가 시작될 때 호출되는 메서드
     public override void OnEpisodeBegin()
     {
@@ -316,4 +317,5 @@ public class PlayerAgent : Agent
         currentEnemyCount = initialEnemyCount;
 
     }
+    
 }
